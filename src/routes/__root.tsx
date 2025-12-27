@@ -1,14 +1,14 @@
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import {
   HeadContent,
+  Outlet,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
-
 import Header from '../components/Header'
-
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
+import { AuthUIProvider } from '../integrations/tanstack-query/root-provider'
 
 import appCss from '../styles/app.css?url'
 
@@ -29,6 +29,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
+        name: 'theme-color',
+        media: '(prefers-color-scheme: system)',
+      },
+      {
         title: 'TanStack Start Starter',
       },
     ],
@@ -40,8 +44,17 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
 
+  component: RootComponent,
   shellComponent: RootDocument,
 })
+
+function RootComponent() {
+  return (
+    <AuthUIProvider>
+      <Outlet />
+    </AuthUIProvider>
+  )
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -51,7 +64,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <Header />
-        {children}
+        <div className="flex min-h-screen flex-col">{children}</div>
         <TanStackDevtools
           config={{
             position: 'bottom-right',
