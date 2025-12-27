@@ -2,6 +2,11 @@ Welcome to your new TanStack app!
 
 # Getting Started
 
+- [x] Biome
+- [x] husky https://typicode.github.io/husky/get-started.html
+- [ ] better-auth
+- [ ] Tiptap
+
 To run this application:
 
 ```bash
