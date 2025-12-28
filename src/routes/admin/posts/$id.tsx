@@ -7,9 +7,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { checkAdminAuth } from '@/lib/auth-helpers'
 import {
   checkSlugAvailability,
-  createArticle,
-  getArticle,
-  updateArticle,
+  createPost,
+  getPost,
+  updatePost,
 } from '@/lib/posts'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
@@ -28,7 +28,7 @@ export const Route = createFileRoute('/admin/posts/$id')({
       throw new Error('Unauthorized: Admin access required')
     }
   },
-  component: EditArticle,
+  component: EditPost,
 })
 
 type Post = {
@@ -42,7 +42,7 @@ type Post = {
   updatedAt: string
 }
 
-function EditArticle() {
+function EditPost() {
   const { id } = Route.useParams()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -59,9 +59,9 @@ function EditArticle() {
     message?: string
   }>({ checking: false })
 
-  const getArticleFn = useServerFn(getArticle)
-  const createArticleFn = useServerFn(createArticle)
-  const updateArticleFn = useServerFn(updateArticle)
+  const getPostFn = useServerFn(getPost)
+  const createPostFn = useServerFn(createPost)
+  const updatePostFn = useServerFn(updatePost)
   const checkSlugFn = useServerFn(checkSlugAvailability)
 
   // Check slug availability with debounce
@@ -96,7 +96,7 @@ function EditArticle() {
 
   const { data: post, isLoading } = useQuery<Post>({
     queryKey: ['post', id],
-    queryFn: () => getArticleFn({ data: { id } }),
+    queryFn: () => getPostFn({ data: { id } }),
     enabled: !isNew,
   })
 
@@ -113,11 +113,11 @@ function EditArticle() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (isNew) {
-        return createArticleFn({
+        return createPostFn({
           data: { title, slug, content, excerpt, published },
         })
       }
-      return updateArticleFn({
+      return updatePostFn({
         data: { id, title, slug, content, excerpt, published },
       })
     },

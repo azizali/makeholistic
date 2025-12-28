@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { checkAdminAuth } from '@/lib/auth-helpers'
-import { deleteArticle, getArticlesAdmin } from '@/lib/posts'
+import { deletePost, getPostsAdmin } from '@/lib/posts'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
@@ -29,7 +29,7 @@ export const Route = createFileRoute('/admin/posts/')({
       throw new Error('Unauthorized: Admin access required')
     }
   },
-  component: AdminArticles,
+  component: AdminPosts,
 })
 
 type Post = {
@@ -47,21 +47,21 @@ type Post = {
   }
 }
 
-function AdminArticles() {
+function AdminPosts() {
   const navigate = Route.useNavigate()
   const queryClient = useQueryClient()
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
-  const getArticlesAdminFn = useServerFn(getArticlesAdmin)
-  const deleteArticleFn = useServerFn(deleteArticle)
+  const getPostsAdminFn = useServerFn(getPostsAdmin)
+  const deletePostFn = useServerFn(deletePost)
 
   const { data: posts, isLoading } = useQuery<Post[]>({
     queryKey: ['admin-posts'],
-    queryFn: () => getArticlesAdminFn(),
+    queryFn: () => getPostsAdminFn(),
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteArticleFn({ data: { id } }),
+    mutationFn: (id: string) => deletePostFn({ data: { id } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-posts'] })
       setDeleteId(null)

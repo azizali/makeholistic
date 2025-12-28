@@ -1,11 +1,11 @@
 import { Card } from '@/components/ui/card'
-import { getArticles } from '@/lib/posts'
+import { getPosts } from '@/lib/posts'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 
 export const Route = createFileRoute('/posts/')({
-  component: ArticlesList,
+  component: PostsList,
 })
 
 type Post = {
@@ -23,12 +23,12 @@ type Post = {
   }
 }
 
-function ArticlesList() {
-  const getArticlesFn = useServerFn(getArticles)
+function PostsList() {
+  const getPostsFn = useServerFn(getPosts)
 
   const { data: posts, isLoading } = useQuery<Post[]>({
     queryKey: ['posts'],
-    queryFn: () => getArticlesFn(),
+    queryFn: () => getPostsFn(),
   })
 
   return (

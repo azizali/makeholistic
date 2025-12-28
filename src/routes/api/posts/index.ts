@@ -85,7 +85,7 @@ export const Route = createFileRoute('/api/posts/')({
             '-' +
             randomUUID().slice(0, 8)
 
-          const newArticle = await db
+          const newPost = await db
             .insert(post)
             .values({
               id: randomUUID(),
@@ -98,7 +98,7 @@ export const Route = createFileRoute('/api/posts/')({
             })
             .returning()
 
-          return Response.json(newArticle[0], { status: 201 })
+          return Response.json(newPost[0], { status: 201 })
         } catch (error) {
           console.error('Error creating post:', error)
           return Response.json(

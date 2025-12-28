@@ -21,13 +21,13 @@ export const post = pgTable(
       .notNull(),
   },
   (table) => [
-    index('article_authorId_idx').on(table.authorId),
-    index('article_slug_idx').on(table.slug),
-    index('article_published_idx').on(table.published),
+    index('post_authorId_idx').on(table.authorId),
+    index('post_slug_idx').on(table.slug),
+    index('post_published_idx').on(table.published),
   ],
 )
 
-export const articleRelations = relations(post, ({ one }) => ({
+export const postRelations = relations(post, ({ one }) => ({
   author: one(user, {
     fields: [post.authorId],
     references: [user.id],
@@ -35,9 +35,9 @@ export const articleRelations = relations(post, ({ one }) => ({
 }))
 
 export type Post = typeof post.$inferSelect
-export type NewArticle = typeof post.$inferInsert
-export type ArticleId = Post['id']
-export type ArticleWithAuthor = Post & { author: UserBasicInfo }
+export type NewPost = typeof post.$inferInsert
+export type PostId = Post['id']
+export type PostWithAuthor = Post & { author: UserBasicInfo }
 
 export type UserBasicInfo = {
   id: string

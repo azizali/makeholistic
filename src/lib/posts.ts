@@ -8,7 +8,7 @@ import { desc, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 // GET all published posts (public)
-export const getArticles = createServerFn().handler(async () => {
+export const getPosts = createServerFn().handler(async () => {
   const posts = await db
     .select({
       id: post.id,
@@ -33,40 +33,38 @@ export const getArticles = createServerFn().handler(async () => {
 })
 
 // GET all posts including unpublished (admin only)
-export const getArticlesAdmin = createServerFn().handler(
-  async ({ request }) => {
-    await checkIsAdmin(request)
+export const getPostsAdmin = createServerFn().handler(async ({ request }) => {
+  await checkIsAdmin(request)
 
-    const posts = await db
-      .select({
-        id: post.id,
-        title: post.title,
-        slug: post.slug,
-        excerpt: post.excerpt,
-        published: post.published,
-        createdAt: post.createdAt,
-        updatedAt: post.updatedAt,
-        author: {
-          id: user.id,
-          name: user.name,
-          image: user.image,
-        },
-      })
-      .from(post)
-      .leftJoin(user, eq(post.authorId, user.id))
-      .orderBy(desc(post.createdAt))
+  const posts = await db
+    .select({
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      excerpt: post.excerpt,
+      published: post.published,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+      author: {
+        id: user.id,
+        name: user.name,
+        image: user.image,
+      },
+    })
+    .from(post)
+    .leftJoin(user, eq(post.authorId, user.id))
+    .orderBy(desc(post.createdAt))
 
-    return posts
-  },
-)
+  return posts
+})
 
 // GET single post by ID
-const GetArticleSchema = z.object({
+const GetPostSchema = z.object({
   id: z.string(),
 })
 
-export const getArticle = createServerFn()
-  .inputValidator(GetArticleSchema.parse)
+export const getPost = createServerFn()
+  .inputValidator(GetPostSchema.parse)
   .handler(async ({ data }) => {
     const result = await db
       .select({
@@ -122,12 +120,12 @@ export const checkSlugAvailability = createServerFn()
   })
 
 // GET post by slug
-const GetArticleBySlugSchema = z.object({
+const GetPostBySlugSchema = z.object({
   slug: z.string(),
 })
 
-export const getArticleBySlug = createServerFn()
-  .inputValidator(GetArticleBySlugSchema.parse)
+export const getPostBySlug = createServerFn()
+  .inputValidator(GetPostBySlugSchema.parse)
   .handler(async ({ data }) => {
     const result = await db
       .select({
@@ -181,7 +179,7 @@ async function checkIsAdmin(request: Request) {
 }
 
 // POST create post (admin only)
-const CreateArticleSchema = z.object({
+const CreatePostSchema = z.object({
   title: z.string().min(1),
   slug: z
     .string()
@@ -194,12 +192,12 @@ const CreateArticleSchema = z.object({
   published: z.boolean().default(false),
 })
 
-export const createArticle = createServerFn({ method: 'POST' })
-  .inputValidator(CreateArticleSchema.parse)
+export const createPost = createServerFn({ method: 'POST' })
+  .inputValidator(CreatePostSchema.parse)
   .handler(async ({ data, request }) => {
     const userId = await checkIsAdmin(request)
 
-    const newArticle = await db
+    const newPost = await db
       .insert(post)
       .values({
         id: randomUUID(),
@@ -212,11 +210,11 @@ export const createArticle = createServerFn({ method: 'POST' })
       })
       .returning()
 
-    return newArticle[0]
+    return newPost[0]
   })
 
 // PUT update post (admin only)
-const UpdateArticleSchema = z.object({
+const UpdatePostSchema = z.object({
   id: z.string(),
   title: z.string().optional(),
   slug: z
@@ -230,8 +228,8 @@ const UpdateArticleSchema = z.object({
   published: z.boolean().optional(),
 })
 
-export const updateArticle = createServerFn({ method: 'POST' })
-  .inputValidator(UpdateArticleSchema.parse)
+export const updatePost = createServerFn({ method: 'POST' })
+  .inputValidator(UpdatePostSchema.parse)
   .handler(async ({ data, request }) => {
     await checkIsAdmin(request)
 
@@ -254,12 +252,12 @@ export const updateArticle = createServerFn({ method: 'POST' })
   })
 
 // DELETE post (admin only)
-const DeleteArticleSchema = z.object({
+const DeletePostSchema = z.object({
   id: z.string(),
 })
 
-export const deleteArticle = createServerFn({ method: 'POST' })
-  .inputValidator(DeleteArticleSchema.parse)
+export const deletePost = createServerFn({ method: 'POST' })
+  .inputValidator(DeletePostSchema.parse)
   .handler(async ({ data, request }) => {
     await checkIsAdmin(request)
 

@@ -1,11 +1,11 @@
 import { Card } from '@/components/ui/card'
-import { getArticleBySlug } from '@/lib/posts'
+import { getPostBySlug } from '@/lib/posts'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 
 export const Route = createFileRoute('/posts/$slug')({
-  component: ArticleDetail,
+  component: PostDetail,
 })
 
 type Post = {
@@ -24,9 +24,9 @@ type Post = {
   }
 }
 
-function ArticleDetail() {
+function PostDetail() {
   const { slug } = Route.useParams()
-  const getArticleBySlugFn = useServerFn(getArticleBySlug)
+  const getPostBySlugFn = useServerFn(getPostBySlug)
 
   const {
     data: post,
@@ -34,7 +34,7 @@ function ArticleDetail() {
     error,
   } = useQuery<Post>({
     queryKey: ['post-by-slug', slug],
-    queryFn: () => getArticleBySlugFn({ data: { slug } }),
+    queryFn: () => getPostBySlugFn({ data: { slug } }),
   })
 
   if (isLoading) {
