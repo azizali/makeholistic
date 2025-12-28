@@ -1,6 +1,14 @@
+import { authClient, useSession } from '@/lib/auth-client'
 import { Link } from '@tanstack/react-router'
 
 export default function Header() {
+  const { data: session } = useSession()
+
+  const handleLogout = async () => {
+    await authClient.signOut()
+    window.location.href = '/'
+  }
+
   return (
     <header className="w-full border-b bg-background">
       <div className="container mx-auto px-6 py-4">
@@ -13,11 +21,40 @@ export default function Header() {
 
           <nav className="flex items-center gap-4">
             <Link
-              to="/"
+              to="/articles"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              About
+              Articles
             </Link>
+            {session ? (
+              <>
+                <Link
+                  to="/admin/articles"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Manage
+                </Link>
+                <div className="flex items-center gap-3 pl-2 ml-2 border-l">
+                  <span className="text-sm text-muted-foreground">
+                    {session?.user?.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </>
+            ) : (
+              <Link
+                to="/auth/sign-in"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
           </nav>
         </div>
       </div>
