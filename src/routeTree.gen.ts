@@ -10,13 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PostsIndexRouteImport } from './routes/posts/index'
+import { Route as PostsSlugRouteImport } from './routes/posts/$slug'
 import { Route as AuthAuthViewRouteImport } from './routes/auth/$authView'
 import { Route as AccountAccountViewRouteImport } from './routes/account/$accountView'
+import { Route as ApiPostsIndexRouteImport } from './routes/api/posts/index'
+import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
+import { Route as ApiPostsIdRouteImport } from './routes/api/posts/$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AdminPostsIdRouteImport } from './routes/admin/posts/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostsIndexRoute = PostsIndexRouteImport.update({
+  id: '/posts/',
+  path: '/posts/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostsSlugRoute = PostsSlugRouteImport.update({
+  id: '/posts/$slug',
+  path: '/posts/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthAuthViewRoute = AuthAuthViewRouteImport.update({
@@ -29,9 +45,29 @@ const AccountAccountViewRoute = AccountAccountViewRouteImport.update({
   path: '/account/$accountView',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPostsIndexRoute = ApiPostsIndexRouteImport.update({
+  id: '/api/posts/',
+  path: '/api/posts/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPostsIndexRoute = AdminPostsIndexRouteImport.update({
+  id: '/admin/posts/',
+  path: '/admin/posts/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPostsIdRoute = ApiPostsIdRouteImport.update({
+  id: '/api/posts/$id',
+  path: '/api/posts/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPostsIdRoute = AdminPostsIdRouteImport.update({
+  id: '/admin/posts/$id',
+  path: '/admin/posts/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -39,39 +75,89 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account/$accountView': typeof AccountAccountViewRoute
   '/auth/$authView': typeof AuthAuthViewRoute
+  '/posts/$slug': typeof PostsSlugRoute
+  '/posts': typeof PostsIndexRoute
+  '/admin/posts/$id': typeof AdminPostsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/posts/$id': typeof ApiPostsIdRoute
+  '/admin/posts': typeof AdminPostsIndexRoute
+  '/api/posts': typeof ApiPostsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account/$accountView': typeof AccountAccountViewRoute
   '/auth/$authView': typeof AuthAuthViewRoute
+  '/posts/$slug': typeof PostsSlugRoute
+  '/posts': typeof PostsIndexRoute
+  '/admin/posts/$id': typeof AdminPostsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/posts/$id': typeof ApiPostsIdRoute
+  '/admin/posts': typeof AdminPostsIndexRoute
+  '/api/posts': typeof ApiPostsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account/$accountView': typeof AccountAccountViewRoute
   '/auth/$authView': typeof AuthAuthViewRoute
+  '/posts/$slug': typeof PostsSlugRoute
+  '/posts/': typeof PostsIndexRoute
+  '/admin/posts/$id': typeof AdminPostsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/posts/$id': typeof ApiPostsIdRoute
+  '/admin/posts/': typeof AdminPostsIndexRoute
+  '/api/posts/': typeof ApiPostsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/account/$accountView' | '/auth/$authView' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/account/$accountView'
+    | '/auth/$authView'
+    | '/posts/$slug'
+    | '/posts'
+    | '/admin/posts/$id'
+    | '/api/auth/$'
+    | '/api/posts/$id'
+    | '/admin/posts'
+    | '/api/posts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account/$accountView' | '/auth/$authView' | '/api/auth/$'
+  to:
+    | '/'
+    | '/account/$accountView'
+    | '/auth/$authView'
+    | '/posts/$slug'
+    | '/posts'
+    | '/admin/posts/$id'
+    | '/api/auth/$'
+    | '/api/posts/$id'
+    | '/admin/posts'
+    | '/api/posts'
   id:
     | '__root__'
     | '/'
     | '/account/$accountView'
     | '/auth/$authView'
+    | '/posts/$slug'
+    | '/posts/'
+    | '/admin/posts/$id'
     | '/api/auth/$'
+    | '/api/posts/$id'
+    | '/admin/posts/'
+    | '/api/posts/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountAccountViewRoute: typeof AccountAccountViewRoute
   AuthAuthViewRoute: typeof AuthAuthViewRoute
+  PostsSlugRoute: typeof PostsSlugRoute
+  PostsIndexRoute: typeof PostsIndexRoute
+  AdminPostsIdRoute: typeof AdminPostsIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiPostsIdRoute: typeof ApiPostsIdRoute
+  AdminPostsIndexRoute: typeof AdminPostsIndexRoute
+  ApiPostsIndexRoute: typeof ApiPostsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -81,6 +167,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/posts/': {
+      id: '/posts/'
+      path: '/posts'
+      fullPath: '/posts'
+      preLoaderRoute: typeof PostsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/posts/$slug': {
+      id: '/posts/$slug'
+      path: '/posts/$slug'
+      fullPath: '/posts/$slug'
+      preLoaderRoute: typeof PostsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/$authView': {
@@ -97,11 +197,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountAccountViewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/posts/': {
+      id: '/api/posts/'
+      path: '/api/posts'
+      fullPath: '/api/posts'
+      preLoaderRoute: typeof ApiPostsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/posts/': {
+      id: '/admin/posts/'
+      path: '/admin/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AdminPostsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/posts/$id': {
+      id: '/api/posts/$id'
+      path: '/api/posts/$id'
+      fullPath: '/api/posts/$id'
+      preLoaderRoute: typeof ApiPostsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/posts/$id': {
+      id: '/admin/posts/$id'
+      path: '/admin/posts/$id'
+      fullPath: '/admin/posts/$id'
+      preLoaderRoute: typeof AdminPostsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -111,7 +239,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountAccountViewRoute: AccountAccountViewRoute,
   AuthAuthViewRoute: AuthAuthViewRoute,
+  PostsSlugRoute: PostsSlugRoute,
+  PostsIndexRoute: PostsIndexRoute,
+  AdminPostsIdRoute: AdminPostsIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiPostsIdRoute: ApiPostsIdRoute,
+  AdminPostsIndexRoute: AdminPostsIndexRoute,
+  ApiPostsIndexRoute: ApiPostsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
