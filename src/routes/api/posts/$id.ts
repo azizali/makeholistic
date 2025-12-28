@@ -1,14 +1,14 @@
 import { db } from '@/db'
-import { article } from '@/db/schema/articles'
 import { user } from '@/db/schema/auth'
+import { post } from '@/db/schema/posts'
 import { auth } from '@/lib/auth'
 import { createFileRoute } from '@tanstack/react-router'
 import { eq } from 'drizzle-orm'
 
-// GET /api/articles/:id - Get single article
-// PUT /api/articles/:id - Update article (admin only)
-// DELETE /api/articles/:id - Delete article (admin only)
-export const Route = createFileRoute('/api/articles/$id')({
+// GET /api/posts/:id - Get single post
+// PUT /api/posts/:id - Update post (admin only)
+// DELETE /api/posts/:id - Delete post (admin only)
+export const Route = createFileRoute('/api/posts/$id')({
   server: {
     handlers: {
       GET: async ({ request, params }) => {
@@ -17,37 +17,34 @@ export const Route = createFileRoute('/api/articles/$id')({
 
           const result = await db
             .select({
-              id: article.id,
-              title: article.title,
-              slug: article.slug,
-              content: article.content,
-              excerpt: article.excerpt,
-              published: article.published,
-              createdAt: article.createdAt,
-              updatedAt: article.updatedAt,
+              id: post.id,
+              title: post.title,
+              slug: post.slug,
+              content: post.content,
+              excerpt: post.excerpt,
+              published: post.published,
+              createdAt: post.createdAt,
+              updatedAt: post.updatedAt,
               author: {
                 id: user.id,
                 name: user.name,
                 image: user.image,
               },
             })
-            .from(article)
-            .leftJoin(user, eq(article.authorId, user.id))
-            .where(eq(article.id, id))
+            .from(post)
+            .leftJoin(user, eq(post.authorId, user.id))
+            .where(eq(post.id, id))
             .limit(1)
 
           if (result.length === 0) {
-            return Response.json(
-              { error: 'Article not found' },
-              { status: 404 },
-            )
+            return Response.json({ error: 'Post not found' }, { status: 404 })
           }
 
           return Response.json(result[0])
         } catch (error) {
-          console.error('Error fetching article:', error)
+          console.error('Error fetching post:', error)
           return Response.json(
-            { error: 'Failed to fetch article' },
+            { error: 'Failed to fetch post' },
             { status: 500 },
           )
         }
@@ -79,7 +76,7 @@ export const Route = createFileRoute('/api/articles/$id')({
           const { title, content, excerpt, published } = body
 
           const updated = await db
-            .update(article)
+            .update(post)
             .set({
               ...(title && { title }),
               ...(content && { content }),
@@ -87,21 +84,18 @@ export const Route = createFileRoute('/api/articles/$id')({
               ...(published !== undefined && { published }),
               updatedAt: new Date(),
             })
-            .where(eq(article.id, id))
+            .where(eq(post.id, id))
             .returning()
 
           if (updated.length === 0) {
-            return Response.json(
-              { error: 'Article not found' },
-              { status: 404 },
-            )
+            return Response.json({ error: 'Post not found' }, { status: 404 })
           }
 
           return Response.json(updated[0])
         } catch (error) {
-          console.error('Error updating article:', error)
+          console.error('Error updating post:', error)
           return Response.json(
-            { error: 'Failed to update article' },
+            { error: 'Failed to update post' },
             { status: 500 },
           )
         }
@@ -131,22 +125,19 @@ export const Route = createFileRoute('/api/articles/$id')({
           const { id } = params
 
           const deleted = await db
-            .delete(article)
-            .where(eq(article.id, id))
+            .delete(post)
+            .where(eq(post.id, id))
             .returning()
 
           if (deleted.length === 0) {
-            return Response.json(
-              { error: 'Article not found' },
-              { status: 404 },
-            )
+            return Response.json({ error: 'Post not found' }, { status: 404 })
           }
 
-          return Response.json({ message: 'Article deleted successfully' })
+          return Response.json({ message: 'Post deleted successfully' })
         } catch (error) {
-          console.error('Error deleting article:', error)
+          console.error('Error deleting post:', error)
           return Response.json(
-            { error: 'Failed to delete article' },
+            { error: 'Failed to delete post' },
             { status: 500 },
           )
         }

@@ -4,19 +4,19 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
+import { checkAdminAuth } from '@/lib/auth-helpers'
 import {
   checkSlugAvailability,
   createArticle,
   getArticle,
   updateArticle,
-} from '@/lib/articles'
-import { checkAdminAuth } from '@/lib/auth-helpers'
+} from '@/lib/posts'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 import { useEffect, useId, useState } from 'react'
 
-export const Route = createFileRoute('/admin/articles/$id')({
+export const Route = createFileRoute('/admin/posts/$id')({
   loader: async () => {
     const authResult = await checkAdminAuth()
 
@@ -31,7 +31,7 @@ export const Route = createFileRoute('/admin/articles/$id')({
   component: EditArticle,
 })
 
-type Article = {
+type Post = {
   id: string
   title: string
   slug: string
@@ -94,21 +94,21 @@ function EditArticle() {
     return () => clearTimeout(timer)
   }, [slug, id, isNew, checkSlugFn])
 
-  const { data: article, isLoading } = useQuery<Article>({
-    queryKey: ['article', id],
+  const { data: post, isLoading } = useQuery<Post>({
+    queryKey: ['post', id],
     queryFn: () => getArticleFn({ data: { id } }),
     enabled: !isNew,
   })
 
   useEffect(() => {
-    if (article) {
-      setTitle(article.title)
-      setSlug(article.slug)
-      setContent(article.content)
-      setExcerpt(article.excerpt || '')
-      setPublished(article.published)
+    if (post) {
+      setTitle(post.title)
+      setSlug(post.slug)
+      setContent(post.content)
+      setExcerpt(post.excerpt || '')
+      setPublished(post.published)
     }
-  }, [article])
+  }, [post])
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -122,9 +122,9 @@ function EditArticle() {
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-articles'] })
-      queryClient.invalidateQueries({ queryKey: ['article', id] })
-      navigate({ to: '/admin/articles' })
+      queryClient.invalidateQueries({ queryKey: ['admin-posts'] })
+      queryClient.invalidateQueries({ queryKey: ['post', id] })
+      navigate({ to: '/admin/posts' })
     },
   })
 
@@ -136,11 +136,11 @@ function EditArticle() {
     <div className="container mx-auto py-8 px-4 max-w-4xl">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">
-          {isNew ? 'Create Article' : 'Edit Article'}
+          {isNew ? 'Create Post' : 'Edit Post'}
         </h1>
         <Button
           variant="outline"
-          onClick={() => navigate({ to: '/admin/articles' })}
+          onClick={() => navigate({ to: '/admin/posts' })}
         >
           Cancel
         </Button>
@@ -160,7 +160,7 @@ function EditArticle() {
               id={`title-${useId}`}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Article title"
+              placeholder="Post title"
               required
             />
           </div>
@@ -171,7 +171,7 @@ function EditArticle() {
               id={`slug-${useId}`}
               value={slug}
               onChange={(e) => setSlug(e.target.value.toLowerCase())}
-              placeholder="article-url-slug"
+              placeholder="post-url-slug"
               pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
               required
               className={
@@ -207,7 +207,7 @@ function EditArticle() {
               id={`excerpt-${useId}`}
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
-              placeholder="Short summary of the article"
+              placeholder="Short summary of the post"
               rows={3}
             />
           </div>
@@ -218,7 +218,7 @@ function EditArticle() {
               id={`content-${useId}`}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Article content"
+              placeholder="Post content"
               rows={15}
               required
             />
@@ -242,7 +242,7 @@ function EditArticle() {
                 slugStatus.checking
               }
             >
-              {saveMutation.isPending ? 'Saving...' : 'Save Article'}
+              {saveMutation.isPending ? 'Saving...' : 'Save Post'}
             </Button>
             {saveMutation.isError && (
               <p className="text-sm text-destructive">

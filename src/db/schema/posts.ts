@@ -2,8 +2,8 @@ import { relations } from 'drizzle-orm'
 import { boolean, index, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 import { user } from './auth'
 
-export const article = pgTable(
-  'article',
+export const post = pgTable(
+  'post',
   {
     id: text('id').primaryKey(),
     title: text('title').notNull(),
@@ -27,17 +27,17 @@ export const article = pgTable(
   ],
 )
 
-export const articleRelations = relations(article, ({ one }) => ({
+export const articleRelations = relations(post, ({ one }) => ({
   author: one(user, {
-    fields: [article.authorId],
+    fields: [post.authorId],
     references: [user.id],
   }),
 }))
 
-export type Article = typeof article.$inferSelect
-export type NewArticle = typeof article.$inferInsert
-export type ArticleId = Article['id']
-export type ArticleWithAuthor = Article & { author: UserBasicInfo }
+export type Post = typeof post.$inferSelect
+export type NewArticle = typeof post.$inferInsert
+export type ArticleId = Post['id']
+export type ArticleWithAuthor = Post & { author: UserBasicInfo }
 
 export type UserBasicInfo = {
   id: string

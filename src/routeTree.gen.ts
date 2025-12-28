@@ -10,24 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ArticlesIndexRouteImport } from './routes/articles/index'
+import { Route as PostsIndexRouteImport } from './routes/posts/index'
+import { Route as PostsSlugRouteImport } from './routes/posts/$slug'
 import { Route as AuthAuthViewRouteImport } from './routes/auth/$authView'
-import { Route as ArticlesSlugRouteImport } from './routes/articles/$slug'
 import { Route as AccountAccountViewRouteImport } from './routes/account/$accountView'
-import { Route as ApiArticlesIndexRouteImport } from './routes/api/articles/index'
-import { Route as AdminArticlesIndexRouteImport } from './routes/admin/articles/index'
+import { Route as ApiPostsIndexRouteImport } from './routes/api/posts/index'
+import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
+import { Route as ApiPostsIdRouteImport } from './routes/api/posts/$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as ApiArticlesIdRouteImport } from './routes/api/articles/$id'
-import { Route as AdminArticlesIdRouteImport } from './routes/admin/articles/$id'
+import { Route as AdminPostsIdRouteImport } from './routes/admin/posts/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArticlesIndexRoute = ArticlesIndexRouteImport.update({
-  id: '/articles/',
-  path: '/articles/',
+const PostsIndexRoute = PostsIndexRouteImport.update({
+  id: '/posts/',
+  path: '/posts/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostsSlugRoute = PostsSlugRouteImport.update({
+  id: '/posts/$slug',
+  path: '/posts/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthAuthViewRoute = AuthAuthViewRouteImport.update({
@@ -35,24 +40,24 @@ const AuthAuthViewRoute = AuthAuthViewRouteImport.update({
   path: '/auth/$authView',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
-  id: '/articles/$slug',
-  path: '/articles/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AccountAccountViewRoute = AccountAccountViewRouteImport.update({
   id: '/account/$accountView',
   path: '/account/$accountView',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiArticlesIndexRoute = ApiArticlesIndexRouteImport.update({
-  id: '/api/articles/',
-  path: '/api/articles/',
+const ApiPostsIndexRoute = ApiPostsIndexRouteImport.update({
+  id: '/api/posts/',
+  path: '/api/posts/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminArticlesIndexRoute = AdminArticlesIndexRouteImport.update({
-  id: '/admin/articles/',
-  path: '/admin/articles/',
+const AdminPostsIndexRoute = AdminPostsIndexRouteImport.update({
+  id: '/admin/posts/',
+  path: '/admin/posts/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPostsIdRoute = ApiPostsIdRouteImport.update({
+  id: '/api/posts/$id',
+  path: '/api/posts/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -60,104 +65,99 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiArticlesIdRoute = ApiArticlesIdRouteImport.update({
-  id: '/api/articles/$id',
-  path: '/api/articles/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminArticlesIdRoute = AdminArticlesIdRouteImport.update({
-  id: '/admin/articles/$id',
-  path: '/admin/articles/$id',
+const AdminPostsIdRoute = AdminPostsIdRouteImport.update({
+  id: '/admin/posts/$id',
+  path: '/admin/posts/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account/$accountView': typeof AccountAccountViewRoute
-  '/articles/$slug': typeof ArticlesSlugRoute
   '/auth/$authView': typeof AuthAuthViewRoute
-  '/articles': typeof ArticlesIndexRoute
-  '/admin/articles/$id': typeof AdminArticlesIdRoute
-  '/api/articles/$id': typeof ApiArticlesIdRoute
+  '/posts/$slug': typeof PostsSlugRoute
+  '/posts': typeof PostsIndexRoute
+  '/admin/posts/$id': typeof AdminPostsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/admin/articles': typeof AdminArticlesIndexRoute
-  '/api/articles': typeof ApiArticlesIndexRoute
+  '/api/posts/$id': typeof ApiPostsIdRoute
+  '/admin/posts': typeof AdminPostsIndexRoute
+  '/api/posts': typeof ApiPostsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account/$accountView': typeof AccountAccountViewRoute
-  '/articles/$slug': typeof ArticlesSlugRoute
   '/auth/$authView': typeof AuthAuthViewRoute
-  '/articles': typeof ArticlesIndexRoute
-  '/admin/articles/$id': typeof AdminArticlesIdRoute
-  '/api/articles/$id': typeof ApiArticlesIdRoute
+  '/posts/$slug': typeof PostsSlugRoute
+  '/posts': typeof PostsIndexRoute
+  '/admin/posts/$id': typeof AdminPostsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/admin/articles': typeof AdminArticlesIndexRoute
-  '/api/articles': typeof ApiArticlesIndexRoute
+  '/api/posts/$id': typeof ApiPostsIdRoute
+  '/admin/posts': typeof AdminPostsIndexRoute
+  '/api/posts': typeof ApiPostsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account/$accountView': typeof AccountAccountViewRoute
-  '/articles/$slug': typeof ArticlesSlugRoute
   '/auth/$authView': typeof AuthAuthViewRoute
-  '/articles/': typeof ArticlesIndexRoute
-  '/admin/articles/$id': typeof AdminArticlesIdRoute
-  '/api/articles/$id': typeof ApiArticlesIdRoute
+  '/posts/$slug': typeof PostsSlugRoute
+  '/posts/': typeof PostsIndexRoute
+  '/admin/posts/$id': typeof AdminPostsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/admin/articles/': typeof AdminArticlesIndexRoute
-  '/api/articles/': typeof ApiArticlesIndexRoute
+  '/api/posts/$id': typeof ApiPostsIdRoute
+  '/admin/posts/': typeof AdminPostsIndexRoute
+  '/api/posts/': typeof ApiPostsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/account/$accountView'
-    | '/articles/$slug'
     | '/auth/$authView'
-    | '/articles'
-    | '/admin/articles/$id'
-    | '/api/articles/$id'
+    | '/posts/$slug'
+    | '/posts'
+    | '/admin/posts/$id'
     | '/api/auth/$'
-    | '/admin/articles'
-    | '/api/articles'
+    | '/api/posts/$id'
+    | '/admin/posts'
+    | '/api/posts'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/account/$accountView'
-    | '/articles/$slug'
     | '/auth/$authView'
-    | '/articles'
-    | '/admin/articles/$id'
-    | '/api/articles/$id'
+    | '/posts/$slug'
+    | '/posts'
+    | '/admin/posts/$id'
     | '/api/auth/$'
-    | '/admin/articles'
-    | '/api/articles'
+    | '/api/posts/$id'
+    | '/admin/posts'
+    | '/api/posts'
   id:
     | '__root__'
     | '/'
     | '/account/$accountView'
-    | '/articles/$slug'
     | '/auth/$authView'
-    | '/articles/'
-    | '/admin/articles/$id'
-    | '/api/articles/$id'
+    | '/posts/$slug'
+    | '/posts/'
+    | '/admin/posts/$id'
     | '/api/auth/$'
-    | '/admin/articles/'
-    | '/api/articles/'
+    | '/api/posts/$id'
+    | '/admin/posts/'
+    | '/api/posts/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountAccountViewRoute: typeof AccountAccountViewRoute
-  ArticlesSlugRoute: typeof ArticlesSlugRoute
   AuthAuthViewRoute: typeof AuthAuthViewRoute
-  ArticlesIndexRoute: typeof ArticlesIndexRoute
-  AdminArticlesIdRoute: typeof AdminArticlesIdRoute
-  ApiArticlesIdRoute: typeof ApiArticlesIdRoute
+  PostsSlugRoute: typeof PostsSlugRoute
+  PostsIndexRoute: typeof PostsIndexRoute
+  AdminPostsIdRoute: typeof AdminPostsIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  AdminArticlesIndexRoute: typeof AdminArticlesIndexRoute
-  ApiArticlesIndexRoute: typeof ApiArticlesIndexRoute
+  ApiPostsIdRoute: typeof ApiPostsIdRoute
+  AdminPostsIndexRoute: typeof AdminPostsIndexRoute
+  ApiPostsIndexRoute: typeof ApiPostsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -169,11 +169,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/articles/': {
-      id: '/articles/'
-      path: '/articles'
-      fullPath: '/articles'
-      preLoaderRoute: typeof ArticlesIndexRouteImport
+    '/posts/': {
+      id: '/posts/'
+      path: '/posts'
+      fullPath: '/posts'
+      preLoaderRoute: typeof PostsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/posts/$slug': {
+      id: '/posts/$slug'
+      path: '/posts/$slug'
+      fullPath: '/posts/$slug'
+      preLoaderRoute: typeof PostsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/$authView': {
@@ -183,13 +190,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAuthViewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/articles/$slug': {
-      id: '/articles/$slug'
-      path: '/articles/$slug'
-      fullPath: '/articles/$slug'
-      preLoaderRoute: typeof ArticlesSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/account/$accountView': {
       id: '/account/$accountView'
       path: '/account/$accountView'
@@ -197,18 +197,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountAccountViewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/articles/': {
-      id: '/api/articles/'
-      path: '/api/articles'
-      fullPath: '/api/articles'
-      preLoaderRoute: typeof ApiArticlesIndexRouteImport
+    '/api/posts/': {
+      id: '/api/posts/'
+      path: '/api/posts'
+      fullPath: '/api/posts'
+      preLoaderRoute: typeof ApiPostsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/articles/': {
-      id: '/admin/articles/'
-      path: '/admin/articles'
-      fullPath: '/admin/articles'
-      preLoaderRoute: typeof AdminArticlesIndexRouteImport
+    '/admin/posts/': {
+      id: '/admin/posts/'
+      path: '/admin/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AdminPostsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/posts/$id': {
+      id: '/api/posts/$id'
+      path: '/api/posts/$id'
+      fullPath: '/api/posts/$id'
+      preLoaderRoute: typeof ApiPostsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -218,18 +225,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/articles/$id': {
-      id: '/api/articles/$id'
-      path: '/api/articles/$id'
-      fullPath: '/api/articles/$id'
-      preLoaderRoute: typeof ApiArticlesIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/articles/$id': {
-      id: '/admin/articles/$id'
-      path: '/admin/articles/$id'
-      fullPath: '/admin/articles/$id'
-      preLoaderRoute: typeof AdminArticlesIdRouteImport
+    '/admin/posts/$id': {
+      id: '/admin/posts/$id'
+      path: '/admin/posts/$id'
+      fullPath: '/admin/posts/$id'
+      preLoaderRoute: typeof AdminPostsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -238,14 +238,14 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountAccountViewRoute: AccountAccountViewRoute,
-  ArticlesSlugRoute: ArticlesSlugRoute,
   AuthAuthViewRoute: AuthAuthViewRoute,
-  ArticlesIndexRoute: ArticlesIndexRoute,
-  AdminArticlesIdRoute: AdminArticlesIdRoute,
-  ApiArticlesIdRoute: ApiArticlesIdRoute,
+  PostsSlugRoute: PostsSlugRoute,
+  PostsIndexRoute: PostsIndexRoute,
+  AdminPostsIdRoute: AdminPostsIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-  AdminArticlesIndexRoute: AdminArticlesIndexRoute,
-  ApiArticlesIndexRoute: ApiArticlesIndexRoute,
+  ApiPostsIdRoute: ApiPostsIdRoute,
+  AdminPostsIndexRoute: AdminPostsIndexRoute,
+  ApiPostsIndexRoute: ApiPostsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,43 +1,43 @@
 import { db } from '@/db'
-import { article } from '@/db/schema/articles'
 import { user } from '@/db/schema/auth'
+import { post } from '@/db/schema/posts'
 import { auth } from '@/lib/auth'
 import { createFileRoute } from '@tanstack/react-router'
 import { randomUUID } from 'crypto'
 import { desc, eq } from 'drizzle-orm'
 
-// GET /api/articles - List all published articles (public)
-// POST /api/articles - Create article (admin only)
-export const Route = createFileRoute('/api/articles/')({
+// GET /api/posts - List all published posts (public)
+// POST /api/posts - Create post (admin only)
+export const Route = createFileRoute('/api/posts/')({
   server: {
     handlers: {
       GET: async () => {
         try {
-          const articles = await db
+          const posts = await db
             .select({
-              id: article.id,
-              title: article.title,
-              slug: article.slug,
-              excerpt: article.excerpt,
-              published: article.published,
-              createdAt: article.createdAt,
-              updatedAt: article.updatedAt,
+              id: post.id,
+              title: post.title,
+              slug: post.slug,
+              excerpt: post.excerpt,
+              published: post.published,
+              createdAt: post.createdAt,
+              updatedAt: post.updatedAt,
               author: {
                 id: user.id,
                 name: user.name,
                 image: user.image,
               },
             })
-            .from(article)
-            .leftJoin(user, eq(article.authorId, user.id))
-            .where(eq(article.published, true))
-            .orderBy(desc(article.createdAt))
+            .from(post)
+            .leftJoin(user, eq(post.authorId, user.id))
+            .where(eq(post.published, true))
+            .orderBy(desc(post.createdAt))
 
-          return Response.json(articles)
+          return Response.json(posts)
         } catch (error) {
-          console.error('Error fetching articles:', error)
+          console.error('Error fetching posts:', error)
           return Response.json(
-            { error: 'Failed to fetch articles' },
+            { error: 'Failed to fetch posts' },
             { status: 500 },
           )
         }
@@ -86,7 +86,7 @@ export const Route = createFileRoute('/api/articles/')({
             randomUUID().slice(0, 8)
 
           const newArticle = await db
-            .insert(article)
+            .insert(post)
             .values({
               id: randomUUID(),
               title,
@@ -100,9 +100,9 @@ export const Route = createFileRoute('/api/articles/')({
 
           return Response.json(newArticle[0], { status: 201 })
         } catch (error) {
-          console.error('Error creating article:', error)
+          console.error('Error creating post:', error)
           return Response.json(
-            { error: 'Failed to create article' },
+            { error: 'Failed to create post' },
             { status: 500 },
           )
         }

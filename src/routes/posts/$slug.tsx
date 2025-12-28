@@ -1,14 +1,14 @@
 import { Card } from '@/components/ui/card'
-import { getArticleBySlug } from '@/lib/articles'
+import { getArticleBySlug } from '@/lib/posts'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 
-export const Route = createFileRoute('/articles/$slug')({
+export const Route = createFileRoute('/posts/$slug')({
   component: ArticleDetail,
 })
 
-type Article = {
+type Post = {
   id: string
   title: string
   slug: string
@@ -29,60 +29,60 @@ function ArticleDetail() {
   const getArticleBySlugFn = useServerFn(getArticleBySlug)
 
   const {
-    data: article,
+    data: post,
     isLoading,
     error,
-  } = useQuery<Article>({
-    queryKey: ['article-by-slug', slug],
+  } = useQuery<Post>({
+    queryKey: ['post-by-slug', slug],
     queryFn: () => getArticleBySlugFn({ data: { slug } }),
   })
 
   if (isLoading) {
     return (
       <div className="container mx-auto py-8 px-4 max-w-4xl">
-        Loading article...
+        Loading post...
       </div>
     )
   }
 
-  if (error || !article) {
+  if (error || !post) {
     return (
       <div className="container mx-auto py-8 px-4 max-w-4xl">
         <Card className="p-8 text-center text-muted-foreground">
-          Article not found
+          Post not found
         </Card>
       </div>
     )
   }
 
   return (
-    <article className="container mx-auto py-8 px-4 max-w-4xl">
+    <post className="container mx-auto py-8 px-4 max-w-4xl">
       <Card className="p-8">
-        <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
+        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
 
         <div className="flex items-center gap-3 mb-6 text-sm text-muted-foreground">
-          {article.author.image && (
+          {post.author.image && (
             <img
-              src={article.author.image}
-              alt={article.author.name}
+              src={post.author.image}
+              alt={post.author.name}
               className="w-10 h-10 rounded-full"
             />
           )}
           <div>
             <div className="font-medium text-foreground">
-              {article.author.name}
+              {post.author.name}
             </div>
-            <div>{new Date(article.createdAt).toLocaleDateString()}</div>
+            <div>{new Date(post.createdAt).toLocaleDateString()}</div>
           </div>
         </div>
 
         <div className="prose prose-lg max-w-none">
-          {article.content.split('\n').map((paragraph, index) => (
+          {post.content.split('\n').map((paragraph, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
             <p key={index}>{paragraph}</p>
           ))}
         </div>
       </Card>
-    </article>
+    </post>
   )
 }

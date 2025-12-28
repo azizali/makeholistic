@@ -10,14 +10,14 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { deleteArticle, getArticlesAdmin } from '@/lib/articles'
 import { checkAdminAuth } from '@/lib/auth-helpers'
+import { deleteArticle, getArticlesAdmin } from '@/lib/posts'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/admin/articles/')({
+export const Route = createFileRoute('/admin/posts/')({
   loader: async () => {
     const authResult = await checkAdminAuth()
 
@@ -32,7 +32,7 @@ export const Route = createFileRoute('/admin/articles/')({
   component: AdminArticles,
 })
 
-type Article = {
+type Post = {
   id: string
   title: string
   slug: string
@@ -55,15 +55,15 @@ function AdminArticles() {
   const getArticlesAdminFn = useServerFn(getArticlesAdmin)
   const deleteArticleFn = useServerFn(deleteArticle)
 
-  const { data: articles, isLoading } = useQuery<Article[]>({
-    queryKey: ['admin-articles'],
+  const { data: posts, isLoading } = useQuery<Post[]>({
+    queryKey: ['admin-posts'],
     queryFn: () => getArticlesAdminFn(),
   })
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteArticleFn({ data: { id } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-articles'] })
+      queryClient.invalidateQueries({ queryKey: ['admin-posts'] })
       setDeleteId(null)
     },
   })
@@ -71,32 +71,32 @@ function AdminArticles() {
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Manage Articles</h1>
+        <h1 className="text-3xl font-bold">Manage Posts</h1>
         <Button
           onClick={() =>
-            navigate({ to: '/admin/articles/$id', params: { id: 'new' } })
+            navigate({ to: '/admin/posts/$id', params: { id: 'new' } })
           }
         >
-          Create New Article
+          Create New Post
         </Button>
       </div>
 
       {isLoading ? (
-        <div>Loading articles...</div>
+        <div>Loading posts...</div>
       ) : (
         <div className="grid gap-4">
-          {articles?.length === 0 ? (
+          {posts?.length === 0 ? (
             <Card className="p-8 text-center text-muted-foreground">
-              No articles yet. Create your first article!
+              No posts yet. Create your first post!
             </Card>
           ) : (
-            articles?.map((article) => (
-              <Card key={article.id} className="p-6">
+            posts?.map((post) => (
+              <Card key={post.id} className="p-6">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <h2 className="text-xl font-semibold">{article.title}</h2>
-                      {article.published ? (
+                      <h2 className="text-xl font-semibold">{post.title}</h2>
+                      {post.published ? (
                         <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
                           Published
                         </span>
@@ -106,14 +106,14 @@ function AdminArticles() {
                         </span>
                       )}
                     </div>
-                    {article.excerpt && (
+                    {post.excerpt && (
                       <p className="text-sm text-muted-foreground mb-2">
-                        {article.excerpt}
+                        {post.excerpt}
                       </p>
                     )}
                     <div className="text-xs text-muted-foreground">
-                      by {article.author.name} •{' '}
-                      {new Date(article.createdAt).toLocaleDateString()}
+                      by {post.author.name} •{' '}
+                      {new Date(post.createdAt).toLocaleDateString()}
                     </div>
                   </div>
                   <div className="flex gap-2 ml-4">
@@ -122,8 +122,8 @@ function AdminArticles() {
                       size="sm"
                       onClick={() =>
                         navigate({
-                          to: '/admin/articles/$id',
-                          params: { id: article.id },
+                          to: '/admin/posts/$id',
+                          params: { id: post.id },
                         })
                       }
                     >
@@ -132,7 +132,7 @@ function AdminArticles() {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => setDeleteId(article.id)}
+                      onClick={() => setDeleteId(post.id)}
                     >
                       Delete
                     </Button>
@@ -150,7 +150,7 @@ function AdminArticles() {
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              article.
+              post.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

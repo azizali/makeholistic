@@ -1,66 +1,66 @@
 import { db } from '@/db'
-import { article } from '@/db/schema/articles'
 import { user } from '@/db/schema/auth'
+import { post } from '@/db/schema/posts'
 import { auth } from '@/lib/auth'
 import { createServerFn } from '@tanstack/react-start'
 import { randomUUID } from 'crypto'
 import { desc, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
-// GET all published articles (public)
+// GET all published posts (public)
 export const getArticles = createServerFn().handler(async () => {
-  const articles = await db
+  const posts = await db
     .select({
-      id: article.id,
-      title: article.title,
-      slug: article.slug,
-      excerpt: article.excerpt,
-      published: article.published,
-      createdAt: article.createdAt,
-      updatedAt: article.updatedAt,
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      excerpt: post.excerpt,
+      published: post.published,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
       author: {
         id: user.id,
         name: user.name,
         image: user.image,
       },
     })
-    .from(article)
-    .leftJoin(user, eq(article.authorId, user.id))
-    .where(eq(article.published, true))
-    .orderBy(desc(article.createdAt))
+    .from(post)
+    .leftJoin(user, eq(post.authorId, user.id))
+    .where(eq(post.published, true))
+    .orderBy(desc(post.createdAt))
 
-  return articles
+  return posts
 })
 
-// GET all articles including unpublished (admin only)
+// GET all posts including unpublished (admin only)
 export const getArticlesAdmin = createServerFn().handler(
   async ({ request }) => {
     await checkIsAdmin(request)
 
-    const articles = await db
+    const posts = await db
       .select({
-        id: article.id,
-        title: article.title,
-        slug: article.slug,
-        excerpt: article.excerpt,
-        published: article.published,
-        createdAt: article.createdAt,
-        updatedAt: article.updatedAt,
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+        published: post.published,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
         author: {
           id: user.id,
           name: user.name,
           image: user.image,
         },
       })
-      .from(article)
-      .leftJoin(user, eq(article.authorId, user.id))
-      .orderBy(desc(article.createdAt))
+      .from(post)
+      .leftJoin(user, eq(post.authorId, user.id))
+      .orderBy(desc(post.createdAt))
 
-    return articles
+    return posts
   },
 )
 
-// GET single article by ID
+// GET single post by ID
 const GetArticleSchema = z.object({
   id: z.string(),
 })
@@ -70,27 +70,27 @@ export const getArticle = createServerFn()
   .handler(async ({ data }) => {
     const result = await db
       .select({
-        id: article.id,
-        title: article.title,
-        slug: article.slug,
-        content: article.content,
-        excerpt: article.excerpt,
-        published: article.published,
-        createdAt: article.createdAt,
-        updatedAt: article.updatedAt,
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        content: post.content,
+        excerpt: post.excerpt,
+        published: post.published,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
         author: {
           id: user.id,
           name: user.name,
           image: user.image,
         },
       })
-      .from(article)
-      .leftJoin(user, eq(article.authorId, user.id))
-      .where(eq(article.id, data.id))
+      .from(post)
+      .leftJoin(user, eq(post.authorId, user.id))
+      .where(eq(post.id, data.id))
       .limit(1)
 
     if (result.length === 0) {
-      throw new Error('Article not found')
+      throw new Error('Post not found')
     }
 
     return result[0]
@@ -108,12 +108,12 @@ export const checkSlugAvailability = createServerFn()
     await checkIsAdmin(request)
 
     const existing = await db
-      .select({ id: article.id })
-      .from(article)
-      .where(eq(article.slug, data.slug))
+      .select({ id: post.id })
+      .from(post)
+      .where(eq(post.slug, data.slug))
       .limit(1)
 
-    // If excludeId is provided (editing existing article), check if the found article is the same one
+    // If excludeId is provided (editing existing post), check if the found post is the same one
     if (existing.length > 0 && existing[0].id !== data.excludeId) {
       return { available: false, message: 'Slug is already taken' }
     }
@@ -121,7 +121,7 @@ export const checkSlugAvailability = createServerFn()
     return { available: true, message: 'Slug is available' }
   })
 
-// GET article by slug
+// GET post by slug
 const GetArticleBySlugSchema = z.object({
   slug: z.string(),
 })
@@ -131,27 +131,27 @@ export const getArticleBySlug = createServerFn()
   .handler(async ({ data }) => {
     const result = await db
       .select({
-        id: article.id,
-        title: article.title,
-        slug: article.slug,
-        content: article.content,
-        excerpt: article.excerpt,
-        published: article.published,
-        createdAt: article.createdAt,
-        updatedAt: article.updatedAt,
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        content: post.content,
+        excerpt: post.excerpt,
+        published: post.published,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
         author: {
           id: user.id,
           name: user.name,
           image: user.image,
         },
       })
-      .from(article)
-      .leftJoin(user, eq(article.authorId, user.id))
-      .where(eq(article.slug, data.slug))
+      .from(post)
+      .leftJoin(user, eq(post.authorId, user.id))
+      .where(eq(post.slug, data.slug))
       .limit(1)
 
     if (result.length === 0) {
-      throw new Error('Article not found')
+      throw new Error('Post not found')
     }
 
     return result[0]
@@ -180,7 +180,7 @@ async function checkIsAdmin(request: Request) {
   return session.user.id
 }
 
-// POST create article (admin only)
+// POST create post (admin only)
 const CreateArticleSchema = z.object({
   title: z.string().min(1),
   slug: z
@@ -200,7 +200,7 @@ export const createArticle = createServerFn({ method: 'POST' })
     const userId = await checkIsAdmin(request)
 
     const newArticle = await db
-      .insert(article)
+      .insert(post)
       .values({
         id: randomUUID(),
         title: data.title,
@@ -215,7 +215,7 @@ export const createArticle = createServerFn({ method: 'POST' })
     return newArticle[0]
   })
 
-// PUT update article (admin only)
+// PUT update post (admin only)
 const UpdateArticleSchema = z.object({
   id: z.string(),
   title: z.string().optional(),
@@ -238,22 +238,22 @@ export const updateArticle = createServerFn({ method: 'POST' })
     const { id, ...updates } = data
 
     const updated = await db
-      .update(article)
+      .update(post)
       .set({
         ...updates,
         updatedAt: new Date(),
       })
-      .where(eq(article.id, id))
+      .where(eq(post.id, id))
       .returning()
 
     if (updated.length === 0) {
-      throw new Error('Article not found')
+      throw new Error('Post not found')
     }
 
     return updated[0]
   })
 
-// DELETE article (admin only)
+// DELETE post (admin only)
 const DeleteArticleSchema = z.object({
   id: z.string(),
 })
@@ -264,13 +264,13 @@ export const deleteArticle = createServerFn({ method: 'POST' })
     await checkIsAdmin(request)
 
     const deleted = await db
-      .delete(article)
-      .where(eq(article.id, data.id))
+      .delete(post)
+      .where(eq(post.id, data.id))
       .returning()
 
     if (deleted.length === 0) {
-      throw new Error('Article not found')
+      throw new Error('Post not found')
     }
 
-    return { success: true, message: 'Article deleted successfully' }
+    return { success: true, message: 'Post deleted successfully' }
   })

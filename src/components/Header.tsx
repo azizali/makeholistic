@@ -21,15 +21,15 @@ export default function Header() {
 
           <nav className="flex items-center gap-4">
             <Link
-              to="/articles"
+              to="/posts"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Articles
+              Posts
             </Link>
             {session ? (
               <>
                 <Link
-                  to="/admin/articles"
+                  to="/admin/posts"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Manage

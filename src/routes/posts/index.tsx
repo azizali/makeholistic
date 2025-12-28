@@ -1,14 +1,14 @@
 import { Card } from '@/components/ui/card'
-import { getArticles } from '@/lib/articles'
+import { getArticles } from '@/lib/posts'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 
-export const Route = createFileRoute('/articles/')({
+export const Route = createFileRoute('/posts/')({
   component: ArticlesList,
 })
 
-type Article = {
+type Post = {
   id: string
   title: string
   slug: string
@@ -26,52 +26,46 @@ type Article = {
 function ArticlesList() {
   const getArticlesFn = useServerFn(getArticles)
 
-  const { data: articles, isLoading } = useQuery<Article[]>({
-    queryKey: ['articles'],
+  const { data: posts, isLoading } = useQuery<Post[]>({
+    queryKey: ['posts'],
     queryFn: () => getArticlesFn(),
   })
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-8">Articles</h1>
+      <h1 className="text-4xl font-bold mb-8">Posts</h1>
 
       {isLoading ? (
-        <div>Loading articles...</div>
+        <div>Loading posts...</div>
       ) : (
         <div className="grid gap-6">
-          {articles?.length === 0 ? (
+          {posts?.length === 0 ? (
             <Card className="p-8 text-center text-muted-foreground">
-              No articles published yet.
+              No posts published yet.
             </Card>
           ) : (
-            articles?.map((article) => (
+            posts?.map((post) => (
               <Link
-                key={article.id}
-                to="/articles/$slug"
-                params={{ slug: article.slug }}
+                key={post.id}
+                to="/posts/$slug"
+                params={{ slug: post.slug }}
               >
                 <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
-                  <h2 className="text-2xl font-semibold mb-2">
-                    {article.title}
-                  </h2>
-                  {article.excerpt && (
-                    <p className="text-muted-foreground mb-3">
-                      {article.excerpt}
-                    </p>
+                  <h2 className="text-2xl font-semibold mb-2">{post.title}</h2>
+                  {post.excerpt && (
+                    <p className="text-muted-foreground mb-3">{post.excerpt}</p>
                   )}
                   <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                    {article.author.image && (
+                    {post.author.image && (
                       <img
-                        src={article.author.image}
-                        alt={article.author.name}
+                        src={post.author.image}
+                        alt={post.author.name}
                         className="w-8 h-8 rounded-full"
                       />
                     )}
-                    <span>{article.author.name}</span>
+                    <span>{post.author.name}</span>
                     <span>•</span>
-                    <span>
-                      {new Date(article.createdAt).toLocaleDateString()}
-                    </span>
+                    <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                   </div>
                 </Card>
               </Link>
