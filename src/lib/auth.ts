@@ -4,10 +4,7 @@ import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
 
-if (
-  !import.meta.env.VITE_GOOGLE_CLIENT_ID ||
-  !import.meta.env.VITE_GOOGLE_CLIENT_SECRET
-) {
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   console.warn(
     'Google OAuth credentials not configured. Google sign-in will not work.',
   )
@@ -20,8 +17,8 @@ export const auth = betterAuth({
   }),
   socialProviders: {
     google: {
-      clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
-      clientSecret: import.meta.env.VITE_GOOGLE_CLIENT_SECRET || '',
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     },
   },
   plugins: [tanstackStartCookies()],
