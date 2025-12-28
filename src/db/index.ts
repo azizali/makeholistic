@@ -1,4 +1,11 @@
-import * as schema from '@/db/schema/auth'
 import { drizzle } from 'drizzle-orm/node-postgres'
+import pkg from 'pg'
+import * as schema from './schema/index'
 
-export const db = drizzle(process.env.DATABASE_URL!, { schema })
+const dbUrl = process.env.DATABASE_URL as string
+const { Pool } = pkg
+const pool = new Pool({
+  connectionString: dbUrl,
+})
+
+export const db = drizzle({ client: pool, schema })
