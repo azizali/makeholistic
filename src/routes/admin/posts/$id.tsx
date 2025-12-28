@@ -1,3 +1,4 @@
+import { TipTapEditor } from '@/components/TipTapEditor'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -214,13 +215,10 @@ function EditPost() {
 
           <div className="space-y-2">
             <Label htmlFor="content">Content</Label>
-            <Textarea
-              id={`content-${useId}`}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Post content"
-              rows={15}
-              required
+            <TipTapEditor
+              content={content}
+              onChange={setContent}
+              placeholder="Write your post content..."
             />
           </div>
 

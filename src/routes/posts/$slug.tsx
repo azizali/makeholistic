@@ -56,7 +56,7 @@ function PostDetail() {
   }
 
   return (
-    <post className="container mx-auto py-8 px-4 max-w-4xl">
+    <article className="container mx-auto py-8 px-4 max-w-4xl">
       <Card className="p-8">
         <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
 
@@ -77,12 +77,10 @@ function PostDetail() {
         </div>
 
         <div className="prose prose-lg max-w-none">
-          {post.content.split('\n').map((paragraph, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            <p key={index}>{paragraph}</p>
-          ))}
+          {/** biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
+          <div dangerouslySetInnerHTML={{ __html: post.content }} />
         </div>
       </Card>
-    </post>
+    </article>
   )
 }
