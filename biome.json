@@ -15,6 +15,7 @@
       "**/src/**/*",
       "!**/src/styles",
       "!**/src/components/ui",
+      "!**/src/hooks/use-mobile.ts",
       "!**/src/routeTree.gen.ts"
     ]
   },
