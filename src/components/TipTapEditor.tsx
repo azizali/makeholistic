@@ -1,7 +1,11 @@
 'use client'
 
+import { uploadImage } from '@/lib/media'
+import { useServerFn } from '@tanstack/react-start'
+import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
+import Youtube from '@tiptap/extension-youtube'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import {
@@ -9,14 +13,16 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  ImageIcon,
   Italic,
   Link as LinkIcon,
   List,
   ListOrdered,
   Quote,
   Underline as UnderlineIcon,
+  Video,
 } from 'lucide-react'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Button } from './ui/button'
 
 interface TipTapEditorProps {
@@ -30,6 +36,9 @@ export function TipTapEditor({
   onChange,
   placeholder = 'Start writing...',
 }: TipTapEditorProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const uploadImageFn = useServerFn(uploadImage)
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -44,6 +53,18 @@ export function TipTapEditor({
         },
       }),
       Underline,
+      Image.configure({
+        HTMLAttributes: {
+          class: 'rounded-lg max-w-full h-auto',
+        },
+      }),
+      Youtube.configure({
+        width: 640,
+        height: 360,
+        HTMLAttributes: {
+          class: 'rounded-lg mx-auto my-4',
+        },
+      }),
     ],
     content,
     editorProps: {
@@ -85,12 +106,82 @@ export function TipTapEditor({
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
   }, [editor])
 
+  const handleImageUpload = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0]
+      if (!file || !editor) return
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file')
+        return
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image must be smaller than 5MB')
+        return
+      }
+
+      try {
+        // Convert to base64
+        const reader = new FileReader()
+        reader.onload = async () => {
+          const base64Data = (reader.result as string).split(',')[1]
+
+          // Upload to server
+          const result = await uploadImageFn({
+            data: {
+              filename: file.name,
+              contentType: file.type,
+              base64Data,
+            },
+          })
+
+          if (result.success && result.url) {
+            // Insert image into editor
+            editor.chain().focus().setImage({ src: result.url }).run()
+          }
+        }
+        reader.readAsDataURL(file)
+      } catch (error) {
+        console.error('Image upload failed:', error)
+        alert('Failed to upload image')
+      } finally {
+        // Reset input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+      }
+    },
+    [editor, uploadImageFn],
+  )
+
+  const addYoutubeVideo = useCallback(() => {
+    if (!editor) return
+
+    const url = window.prompt('Enter YouTube URL')
+
+    if (url) {
+      editor.commands.setYoutubeVideo({
+        src: url,
+      })
+    }
+  }, [editor])
+
   if (!editor) {
     return null
   }
 
   return (
     <div className="border rounded-md">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageUpload}
+      />
       {/* Toolbar */}
       <div className="border-b bg-muted/50 p-2 flex flex-wrap gap-1">
         <Button
@@ -194,6 +285,27 @@ export function TipTapEditor({
           className={editor.isActive('blockquote') ? 'bg-muted' : ''}
         >
           <Quote className="h-4 w-4" />
+        </Button>
+
+        <div className="w-px h-6 bg-border mx-1" />
+
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => fileInputRef.current?.click()}
+          title="Insert Image"
+        >
+          <ImageIcon className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={addYoutubeVideo}
+          title="Embed YouTube Video"
+        >
+          <Video className="h-4 w-4" />
         </Button>
       </div>
 
