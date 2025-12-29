@@ -1,4 +1,5 @@
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import type { QueryClient } from '@tanstack/react-query'
 import {
   HeadContent,
   Outlet,
@@ -10,10 +11,7 @@ import Footer from '../components/Footer'
 import Header from '../components/Header'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import { AuthUIProvider } from '../integrations/tanstack-query/root-provider'
-
 import appCss from '../styles/app.css?url'
-
-import type { QueryClient } from '@tanstack/react-query'
 
 interface MyRouterContext {
   queryClient: QueryClient

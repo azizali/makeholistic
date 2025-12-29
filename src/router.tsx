@@ -23,7 +23,7 @@ export const getRouter = () => {
 
   if (!router.isServer) {
     Sentry.init({
-      dsn: import.meta.env.VITE_SENTRY_DSN,
+      dsn: process.env.VITE_SENTRY_DSN,
       integrations: [],
       tracesSampleRate: 1.0,
       sendDefaultPii: true,
