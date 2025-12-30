@@ -4,8 +4,14 @@ Welcome to your new TanStack app!
 
 - [x] Biome
 - [x] husky https://typicode.github.io/husky/get-started.html
-- [ ] better-auth
-- [ ] Tiptap
+- [x] better-auth
+- [x] Tiptap
+- [ ] tiptap image, video
+- [ ] Meta tags, title
+- [ ] SSG for dynamic content
+- [ ] SSG on content change
+- [ ] Terms. Privacy
+
 
 To run this application:
 
