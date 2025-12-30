@@ -6,7 +6,7 @@ import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
 import Youtube from '@tiptap/extension-youtube'
-import { EditorContent, useEditor } from '@tiptap/react'
+import { EditorContent, ReactNodeViewRenderer, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import {
   Bold,
@@ -23,7 +23,22 @@ import {
   Video,
 } from 'lucide-react'
 import { useCallback, useEffect, useRef } from 'react'
+import { ResizableImage } from './tiptap/ResizableImage'
 import { Button } from './ui/button'
+
+const CustomImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      width: {
+        default: null,
+      },
+    }
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(ResizableImage)
+  },
+})
 
 interface TipTapEditorProps {
   content: string
@@ -53,7 +68,8 @@ export function TipTapEditor({
         },
       }),
       Underline,
-      Image.configure({
+      CustomImage.configure({
+        allowBase64: true,
         HTMLAttributes: {
           class: 'rounded-lg max-w-full h-auto',
         },
