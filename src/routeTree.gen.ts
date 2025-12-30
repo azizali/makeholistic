@@ -17,6 +17,7 @@ import { Route as AccountAccountViewRouteImport } from './routes/account/$accoun
 import { Route as ApiPostsIndexRouteImport } from './routes/api/posts/index'
 import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
 import { Route as ApiPostsIdRouteImport } from './routes/api/posts/$id'
+import { Route as ApiMediaFilenameRouteImport } from './routes/api/media/$filename'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AdminPostsIdRouteImport } from './routes/admin/posts/$id'
 
@@ -60,6 +61,11 @@ const ApiPostsIdRoute = ApiPostsIdRouteImport.update({
   path: '/api/posts/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMediaFilenameRoute = ApiMediaFilenameRouteImport.update({
+  id: '/api/media/$filename',
+  path: '/api/media/$filename',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/posts': typeof PostsIndexRoute
   '/admin/posts/$id': typeof AdminPostsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$filename': typeof ApiMediaFilenameRoute
   '/api/posts/$id': typeof ApiPostsIdRoute
   '/admin/posts': typeof AdminPostsIndexRoute
   '/api/posts': typeof ApiPostsIndexRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/posts': typeof PostsIndexRoute
   '/admin/posts/$id': typeof AdminPostsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$filename': typeof ApiMediaFilenameRoute
   '/api/posts/$id': typeof ApiPostsIdRoute
   '/admin/posts': typeof AdminPostsIndexRoute
   '/api/posts': typeof ApiPostsIndexRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/posts/': typeof PostsIndexRoute
   '/admin/posts/$id': typeof AdminPostsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$filename': typeof ApiMediaFilenameRoute
   '/api/posts/$id': typeof ApiPostsIdRoute
   '/admin/posts/': typeof AdminPostsIndexRoute
   '/api/posts/': typeof ApiPostsIndexRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/posts'
     | '/admin/posts/$id'
     | '/api/auth/$'
+    | '/api/media/$filename'
     | '/api/posts/$id'
     | '/admin/posts'
     | '/api/posts'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/posts'
     | '/admin/posts/$id'
     | '/api/auth/$'
+    | '/api/media/$filename'
     | '/api/posts/$id'
     | '/admin/posts'
     | '/api/posts'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/posts/'
     | '/admin/posts/$id'
     | '/api/auth/$'
+    | '/api/media/$filename'
     | '/api/posts/$id'
     | '/admin/posts/'
     | '/api/posts/'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   PostsIndexRoute: typeof PostsIndexRoute
   AdminPostsIdRoute: typeof AdminPostsIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiMediaFilenameRoute: typeof ApiMediaFilenameRoute
   ApiPostsIdRoute: typeof ApiPostsIdRoute
   AdminPostsIndexRoute: typeof AdminPostsIndexRoute
   ApiPostsIndexRoute: typeof ApiPostsIndexRoute
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPostsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/media/$filename': {
+      id: '/api/media/$filename'
+      path: '/api/media/$filename'
+      fullPath: '/api/media/$filename'
+      preLoaderRoute: typeof ApiMediaFilenameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   PostsIndexRoute: PostsIndexRoute,
   AdminPostsIdRoute: AdminPostsIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiMediaFilenameRoute: ApiMediaFilenameRoute,
   ApiPostsIdRoute: ApiPostsIdRoute,
   AdminPostsIndexRoute: AdminPostsIndexRoute,
   ApiPostsIndexRoute: ApiPostsIndexRoute,

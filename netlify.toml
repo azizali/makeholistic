@@ -1,9 +1,9 @@
 [build]
   command = "pnpm build"
-  dir = "dist/client"
+  publish = "dist/client"
 
 [dev]
-  command = "npm run dev"
+  command = "pnpm dev"
   targetPort = 3000
   port = 8888
 

@@ -33,16 +33,16 @@ export const uploadImage = createServerFn({ method: 'POST' })
       // Convert base64 to buffer
       const buffer = Buffer.from(data.base64Data, 'base64')
 
-      // Check if we're in local dev - use data URL instead
-      const isLocal = !process.env.NETLIFY
+      // Check if we should use Blobs
+      const useBlobs = process.env.VITE_USE_NETLIFY_BLOBS === 'true'
 
       let publicUrl: string
 
-      if (isLocal) {
-        // For local dev, use data URL (base64)
+      if (!useBlobs) {
+        // For local dev without Blobs enabled, use data URL (base64)
         publicUrl = `data:${data.contentType};base64,${data.base64Data}`
       } else {
-        // For production, upload to Netlify Blobs
+        // Upload to Netlify Blobs
         await store.set(uniqueFilename, buffer.buffer, {
           metadata: {
             contentType: data.contentType,
@@ -53,8 +53,9 @@ export const uploadImage = createServerFn({ method: 'POST' })
         })
 
         // Get the proper blob URL
-        const siteUrl = process.env.URL || process.env.DEPLOY_URL
-        publicUrl = `${siteUrl}/.netlify/blobs/serve/public/media/${uniqueFilename}`
+        // We use our own API route to serve the blob, wrapped in Netlify Image CDN
+        const sourceUrl = `/api/media/${uniqueFilename}`
+        publicUrl = `/.netlify/images?url=${encodeURIComponent(sourceUrl)}`
       }
 
       // Save to database for tracking
